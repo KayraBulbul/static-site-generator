@@ -1,6 +1,3 @@
-from typing import Optional
-
-
 class HTMLNode:
     def __init__(
         self,
@@ -43,3 +40,23 @@ class LeafNode(HTMLNode):
 
     def __repr__(self) -> str:
         return f"HTMLNode(tag={self.tag}, value={self.value}, props=[{self.props}])"
+
+
+class ParentNode(HTMLNode):
+    def __init__(
+        self, tag: str, children: list["HTMLNode"], props: dict[str, str] | None = None
+    ):
+        super().__init__(tag=tag, children=children, props=props)
+
+    def to_html(self):
+        if not self.tag:
+            raise ValueError("ParentNode needs a tag")
+
+        if not self.children:
+            raise ValueError("ParentNode needs children")
+
+        string = []
+        for child in self.children:
+            string.append(child.to_html())
+
+        return f"<{self.tag}>{''.join(string)}</{self.tag}>"
